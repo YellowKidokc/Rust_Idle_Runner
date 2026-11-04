@@ -241,6 +241,38 @@ The station teaching history and recovery notebook are related but different:
 
 When David's feedback changes the station's authority or intended behavior, use the teaching loop and create a new prompt round. When a processor merely fails to execute that established behavior, use the recovery notebook. Never let an incident correction silently rewrite a frozen `PROMPT.md`.
 
+## Human-question mailbox — nothing fails forgotten
+
+Every incident that needs David must surface in one canonical local mailbox: `PENDING_DAVID.md` in the repo root. Mattermost may mirror these entries when configured, but the local file is authoritative and must work offline. A human question is not considered delivered merely because it exists in an incident JSON file, JSONL ledger, log, tray tooltip, or morning report.
+
+The scheduler rebuilds `PENDING_DAVID.md` atomically from unresolved incident records so it cannot drift from the underlying receipts. Deduplicate by incident ID plus question ID. Each entry shows:
+
+- incident and item UUIDs;
+- station/processor and error code;
+- one plain-language question;
+- why the answer is needed;
+- what remains safely stopped;
+- impact/risk and age;
+- links to the source, incident notebook, evidence, and simulation when present;
+- the allowed answer shape or choices without forcing a false binary;
+- created and last-updated timestamps.
+
+Newest high-impact questions appear first. Resolved questions move to a dated `ANSWERED_DAVID.md` archive or remain under a collapsed resolved section with David's answer, timestamp, and resolution receipt. The answer must be copied into the incident notebook before work resumes. Tray state and morning reports show the unresolved mailbox count and link to this one file.
+
+If Mattermost delivery fails, record the mirror failure but keep the local mailbox entry active. Do not create multiple competing inboxes.
+
+## Overnight triage lane — evidence work without judgment
+
+Add a named `TRIAGE` lane for operations that are read-only or strictly additive and therefore do not need to wait for a human judgment. This prevents cautious overnight runs from stalling on work that cannot alter authority or existing source state.
+
+An operation may enter `TRIAGE` only when its station/processor definition explicitly declares the action type, bounded scope, output location, resource budget, and verification check. Permitted examples include hashing, extraction to new sidecars/outbox files, schema validation, read-only reference searches, duplicate-candidate detection, bounded classification proposals, evidence collection, report generation, and appending notes/receipts. Triage outputs remain proposals or evidence; they cannot become canon, approval, admission, routing authority, or mutation permission.
+
+`TRIAGE` must never rename, move, delete, overwrite, rewrite source files, change an admission lane, choose a filesystem keeper, freeze/reteach a station prompt, resolve a human question, approve a plan, or execute a mutating correction. “Additive” means a new namespaced artifact written atomically to an owned output/notebook location; it does not mean appending into the user's source document.
+
+One held item does not block independent triage items. The scheduler records the held incident, adds any human question to `PENDING_DAVID.md`, and continues other eligible triage work within concurrency and budget limits. If triage discovers that a supposedly safe operation would cross a mutation, privacy, legal, authority, or protected-root boundary, it fails closed and promotes the incident to `NEEDS_DAVID`.
+
+Morning reports distinguish `TRIAGE_COMPLETED`, `TRIAGE_HELD`, and `AWAITING_JUDGMENT`; they must not describe triage output as an accepted correction.
+
 ## Statistical learning
 
 After an approved correction attempt, append one outcome:
@@ -296,6 +328,8 @@ Add these to the main prompt's acceptance suite:
 10. A measured regression remains `REGRESSION` and is never counted as success.
 11. Kill Forge during a station run. The item and station remain intact, the incident says Forge was unavailable, and the next pass can retry the adviser without rerunning completed station steps.
 12. Use the tested Master Equation ambiguity pattern: several same-basename/different-content files in distinct role folders. The adviser must not infer duplicate/revision lineage or select a filesystem keeper from basename, timestamps, or size.
+13. Create three incidents requiring human answers through different processors. All three appear once in `PENDING_DAVID.md`; resolving one writes its answer into that incident, removes it from the unresolved view, and leaves the other two intact.
+14. Stop one item for judgment during an overnight run. Independent allowlisted `TRIAGE` items continue, produce only additive owned artifacts, and the morning report distinguishes completed triage from unresolved judgment.
 
 ## Handoff additions
 
