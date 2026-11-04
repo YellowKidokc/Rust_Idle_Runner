@@ -33,6 +33,12 @@ STEP STOPS
 
 The AI proposes and leaves notes. The Bridge policy routes. The generated PowerShell script executes only an approved plan.
 
+## Operating posture — grace under containment
+
+Mistakes are acceptable because this architecture makes them inexpensive. Read-only defaults, append-only notes, bounded evidence, fail-closed mutations, simulations, and exact approvals should turn a wrong adviser response into an inconvenience rather than damage to a corpus. The permission to make an honest mistake and the containment of its blast radius are one design, not two.
+
+Treat the adviser humanistically: give it room to think, paper to write on, permission not to know, and freedom to request what it needs. In return, require inspectable notes, preserved uncertainty, evidence-linked proposals, and review before consequential action. In David's theological vocabulary, this resembles Law 5 wearing work clothes: mercy without a payment structure becomes enabling; mercy with accountability and contained cost becomes restoration. Treat that as the project's operating interpretation, not as a technical proof or permission to weaken a safety boundary.
+
 ## Layer 5 — DIAGNOSTIC RECOVERY
 
 Add a recovery module to the shared architecture. It may live in `bridge-types` plus a small `recovery` module/crate, but do not create a fifth daemon. The scheduler is the only resident process and owns recovery supervision.
