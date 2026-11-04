@@ -2,6 +2,8 @@
 
 Read BUILD_PROMPT.md first. Everything there still holds. This adds one feature: David can queue AI work in plain words, and the runner does it while he's away.
 
+After this addition, also read `BUILD_PROMPT_v0.4_GDRP_RECOVERY_NOTEBOOK.md`. It defines the required failure capsules, Forge adviser recovery, persistent working notes, simulations, approvals, and measured outcomes for both ordinary jobs and AI task files.
+
 ## Why
 v0.2 runs jobs, but every job must be a program someone already wrote. David wants to hand over a task the way he'd hand it to a person: "canonize the Master Equation folder with DeepSeek, put the results here." The queue turns that note into work.
 
